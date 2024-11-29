@@ -81,78 +81,33 @@ class Window(ThemedTk):
         rightFrame.pack(side='right')
         bottomFrame.pack()
 
-    # def on_sales_selected(self, event):
-    #     selected_sales = self.sales_selected.get()
-    #     print(f"Selected sales: {selected_sales}")  # Debugging
-    #     customers = datasource.get_customer_id(selected_sales)
-
-    #     if self.customerFrame:
-    #         self.customerFrame.destroy()
-
-    #     self.customerFrame = view.CustomerFrame(master=self.selectedFrame, customers=customers)
-    #     self.customerFrame.bind("<<Radio_Button_Selected>>", lambda e: self.radio_button_click())
-    #     self.customerFrame.pack()
-    
     def on_sales_selected(self, event):
         selected_sales = self.sales_selected.get()
         print(f"Selected sales: {selected_sales}")  # Debugging
-
         customers = datasource.get_customer_id(selected_sales)
-        print(f"Retrieved customers for sales ({selected_sales}): {customers}")  # Debugging
 
         if self.customerFrame:
             self.customerFrame.destroy()
 
-        # Create a new CustomerFrame and bind the custom event
         self.customerFrame = view.CustomerFrame(master=self.selectedFrame, customers=customers)
         self.customerFrame.bind("<<Radio_Button_Selected>>", lambda e: self.radio_button_click())
         self.customerFrame.pack()
 
-
-    # def radio_button_click(self, event=None):
-    #     selected_customer = self.customerFrame.selected_radio.get()
-    #     if not selected_customer:
-    #         print("Error: No customer selected. Exiting method.")
-    #         return
-    #     # Clear TreeView
-    #     for children in self.tree.get_children():
-    #         self.tree.delete(children)
-
-    #     # Fetch and display data for the selected customer
-    #     selected_data = datasource.get_selected_data(selected_customer)
-
-    #     for record in selected_data:
-    #         print(f"Inserting record into TreeView: {record}")  # Debugging
-    #         self.tree.insert("", "end", values=record)
-
-    #--------------------------------------------------------------
     def radio_button_click(self, event=None):
-        # Retrieve the selected customer and sales ID
         selected_customer = self.customerFrame.selected_radio.get()
-        selected_sales = self.sales_selected.get()
-        print(f"radio_button_click called with selected_customer: {selected_customer}, selected_sales: {selected_sales}")  # Debugging
-
-        if not selected_customer or selected_sales == '請選擇業務名稱':
-            print("Error: No customer or sales selected. Exiting method.")
+        if not selected_customer:
+            print("Error: No customer selected. Exiting method.")
             return
-
         # Clear TreeView
         for children in self.tree.get_children():
             self.tree.delete(children)
-        print("Cleared TreeView rows.")  # Debugging
 
-        # Fetch and display data for the selected customer under the correct sales
-        try:
-            selected_data = datasource.get_selected_data(selected_customer, selected_sales)
-            print(f"#3--Fetched data for selected customer ({selected_customer}) under sales ({selected_sales}): {selected_data}")  # Debugging
+        # Fetch and display data for the selected customer
+        selected_data = datasource.get_selected_data(selected_customer)
 
-            for record in selected_data:
-                # Insert all fields into TreeView
-                self.tree.insert("", "end", values=record)
-                print(f"Inserting record into TreeView: {record}")  # Debugging
-        except Exception as e:
-            print(f"Error fetching data for customer: {selected_customer}, sales: {selected_sales}. Exception: {e}")
-
+        for record in selected_data:
+            print(f"Inserting record into TreeView: {record}")  # Debugging
+            self.tree.insert("", "end", values=record)
 
 
     def item_selected(self, event):
